@@ -2314,25 +2314,10 @@ static void cb_erase(struct usb_ep *ep, struct usb_request *req)
 
 	strcpy(response, "FAILno flash device defined");
 
-#ifdef CONFIG_FSL_FASTBOOT
-	rx_process_erase(cmd, response);
-#else
 #ifdef CONFIG_FASTBOOT_FLASH_MMC_DEV
 	fb_mmc_erase(cmd, response);
 #endif
-#endif
 	fastboot_tx_write_str(response);
-}
-#endif
-
-#ifdef CONFIG_FSL_FASTBOOT
-static void cb_reboot_bootloader(struct usb_ep *ep, struct usb_request *req)
-{
-	fastboot_tx_write_str("OKAY");
-
-	udelay(1000000);
-	fastboot_enable_flag();
-	do_reset(NULL, 0, 0, NULL);
 }
 #endif
 
@@ -2342,12 +2327,6 @@ struct cmd_dispatch_info {
 };
 
 static const struct cmd_dispatch_info cmd_dispatch_info[] = {
-#ifdef CONFIG_FSL_FASTBOOT
-	{
-		.cmd = "reboot-bootloader",
-		.cb = cb_reboot_bootloader,
-	},
-#endif
 	{
 		.cmd = "reboot",
 		.cb = cb_reboot,
@@ -2368,6 +2347,9 @@ static const struct cmd_dispatch_info cmd_dispatch_info[] = {
 	{
 		.cmd = "flash",
 		.cb = cb_flash,
+	}, {
+		.cmd = "erase",
+		.cb = cb_erase,
 	},
 #endif
 	{

@@ -118,7 +118,7 @@
 	"fastboot_partition_alias_userdata=UDA\0" \
 	"fastboot_partition_alias_vendor=VNR\0" \
 	"bootargs_append=" \
-	"earlyprintk init=/init console=ttyS0,115200n8 " \
+	"init=init console=ttyS0,115200n8 " \
 	"lp0_vec=2064@0xf46ff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
 	"core_edp_mv=1150 core_edp_ma=4000 " \
 	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 " \
