@@ -128,6 +128,26 @@
 	"usbcore.old_scheme_first=1 usb_port_owner_info=2 " \
 	"lane_owner_info=6 emc_max_dvfs=0 "
 
+#define PARTS_DEFAULT \
+	/* Linux partitions */ \
+ 	"uuid_disk=${uuid_gpt_disk};" \
+	"name=rootfs,start=2MiB,size=-,uuid=${uuid_gpt_rootfs}\0" \
+	/* Android partitions */ \
+	"partitions_android=" \
+	"uuid_disk=${uuid_gpt_disk};" \
+	"name=xloader,start=128K,size=128K,uuid=${uuid_gpt_xloader};" \
+	"name=bootloader,size=384K,uuid=${uuid_gpt_bootloader};" \
+	"name=environment,size=128K,uuid=${uuid_gpt_environment};" \
+	"name=misc,size=128K,uuid=${uuid_gpt_misc};" \
+	"name=efs,start=1280K,size=16M,uuid=${uuid_gpt_efs};" \
+	"name=crypto,size=16K,uuid=${uuid_gpt_crypto};" \
+	"name=recovery,size=10M,uuid=${uuid_gpt_recovery};" \
+	"name=LNX,size=10M,uuid=${uuid_gpt_boot};" \
+	"name=system,size=768M,uuid=${uuid_gpt_system};" \
+	"name=cache,size=256M,uuid=${uuid_gpt_cache};" \
+	"name=ipu1,size=1M,uuid=${uuid_gpt_ipu1};" \
+	"name=ipu2,size=1M,uuid=${uuid_gpt_ipu2};" \
+	"name=userdata,size=-,uuid=${uuid_gpt_userdata}"
 
 /* Increase console I/O buffer size */
 #undef CONFIG_SYS_CBSIZE

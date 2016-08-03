@@ -51,16 +51,6 @@
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"partitions_android=" \
-	"name=LNX,start=10M,size=17M;" \
-	"name=DTB,size=4M;" \
-	"name=SOS,size=17M;" \
-	"name=APP,size=1342M;" \
-	"name=VNR,size=419M;" \
-	"name=CAC,size=805M;" \
-	"name=MSC,size=2M;" \
-	"name=FCT,size=17M;" \
-	"name=UDA,size=12000M\0" \
 	TEGRA_DEVICE_SETTINGS \
 	MEM_LAYOUT_ENV_SETTINGS \
 	"fdt_high=ffffffff\0" \
