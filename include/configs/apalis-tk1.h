@@ -44,6 +44,15 @@
 #define CONFIG_SYS_I2C_TEGRA
 #define CONFIG_CMD_I2C
 
+/* Enable gpt partition table */
+#define CONFIG_PARTITION_UUIDS
+#define CONFIG_RANDOM_UUID
+#define CONFIG_CMD_UUID
+#define CONFIG_CMD_GPT
+#define CONFIG_EFI_PARTITION
+#define CONFIG_FS_EXT4
+#define CONFIG_CMD_FS_GENERIC
+
 /* SD/MMC support */
 #define CONFIG_MMC
 #define CONFIG_GENERIC_MMC
@@ -82,22 +91,17 @@
 /* Android fastboot support */
 #define CONFIG_CMD_FASTBOOT
 #define CONFIG_FASTBOOT_FLASH
-
 #define CONFIG_FASTBOOT_GPT_NAME	0
-
 #define CONFIG_FASTBOOT_FLASH_MMC_DEV	0
-#define CONFIG_USB_FASTBOOT_BUF_SIZE	  0x40000000
+#define CONFIG_USB_FASTBOOT_BUF_SIZE	  0x60000000
 #define CONFIG_USB_FASTBOOT_BUF_ADDR	  (NV_PA_SDRAM_BASE + 0x10000000)
-
-#define CONFIG_ANDROID_RECOVERY
 
 /* Android bootimg support */
 #define CONFIG_ANDROID_BOOT_IMAGE
-
 #define CONFIG_CMD_BOOTA
-#define CONFIG_CMD_BOOTA_BOOT_PART	      "LNX"
-#define CONFIG_CMD_BOOTA_RECOVERY_PART	  "SOS"
-#define CONFIG_CMD_BOOTA_DT_PART	      "DTB"
+#define CONFIG_CMD_BOOTA_BOOT_PART	      "boot"
+#define CONFIG_CMD_BOOTA_RECOVERY_PART	  "recovery"
+#define CONFIG_CMD_BOOTA_DT_PART	      "dtb"
 #define CONFIG_ANDROID_DT_HDR_BUFF	      (NV_PA_SDRAM_BASE + 0x03000000)
 #define CONFIG_ANDROID_BOOT_HDR_BUFF	  (NV_PA_SDRAM_BASE + 0x04000000)
 #define BOARD_EXTRA_ENV_SETTINGS \
@@ -135,7 +139,6 @@
 #define CONFIG_SYS_BOOT_RAMDISK_HIGH
 
 #include "tegra-common-usb-gadget.h"
-#undef CONFIG_SYS_DFU_DATA_BUF_SIZE
 #include "tegra-common-post.h"
 
 #endif /* __CONFIG_H */
