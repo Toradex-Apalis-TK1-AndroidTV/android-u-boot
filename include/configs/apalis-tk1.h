@@ -20,7 +20,7 @@
 #define CONFIG_TEGRA124_LP0
 #endif
 
-/* TBD #define CONFIG_MISC_INIT_R - call recovery during start up */
+#define CONFIG_MISC_INIT_R		/* call recovery during start up */
 
 #define CONFIG_OF_LIBFDT
 #define CONFIG_OF_BOARD_SETUP
@@ -95,7 +95,7 @@
 #define CONFIG_FASTBOOT_FLASH
 #define CONFIG_FASTBOOT_GPT_NAME	0
 #define CONFIG_FASTBOOT_FLASH_MMC_DEV	0
-#define CONFIG_USB_FASTBOOT_BUF_SIZE	  0x60000000
+#define CONFIG_USB_FASTBOOT_BUF_SIZE	  0x40000000
 #define CONFIG_USB_FASTBOOT_BUF_ADDR	  (NV_PA_SDRAM_BASE + 0x10000000)
 
 /* Android bootimg support */
@@ -108,6 +108,7 @@
 #define CONFIG_ANDROID_BOOT_HDR_BUFF	  (NV_PA_SDRAM_BASE + 0x04000000)
 #define BOARD_EXTRA_ENV_SETTINGS \
 	"bootargs_append=" \
+	"fastboot_partition_alias_bootloader=bootloader\0" \
 	"fastboot_partition_alias_boot=LNX\0" \
 	"fastboot_partition_alias_dtb=DTB\0" \
 	"fastboot_partition_alias_recovery=SOS\0" \
@@ -122,32 +123,10 @@
 	"core_edp_mv=1150 core_edp_ma=4000 " \
 	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 " \
 	"video=tegrafb memtype=255 ddr_die=2048M@2048M section=256M " \
-	"debug_uartport=lsport,0 androidboot.serialno=042271508196100002cf " \
+	"debug_uartport=lsport,0 androidboot.serialno=02822892 " \
 	"power_supply=Adapter audio_codec=sgtl5000 gpt " \
 	"usbcore.old_scheme_first=1 usb_port_owner_info=2 " \
-	"lane_owner_info=6 emc_max_dvfs=0\0"
-
-/* Increase console I/O buffer size */
-#undef CONFIG_SYS_CBSIZE
-#define CONFIG_SYS_CBSIZE		1024
-
-/* Increase arguments buffer size */
-#undef CONFIG_SYS_BARGSIZE
-#define CONFIG_SYS_BARGSIZE CONFIG_SYS_CBSIZE
-
-/* Increase print buffer size */
-#define CONFIG_SYS_PBSIZE (CONFIG_SYS_CBSIZE + sizeof(CONFIG_SYS_PROMPT) + 16)
-
-/* Increase maximum number of arguments */
-#undef CONFIG_SYS_MAXARGS
-#define CONFIG_SYS_MAXARGS		32
-
-#define CONFIG_CMD_TIME
-#define CONFIG_CMD_MEMTEST
-#define CONFIG_SYS_ALT_MEMTEST
-
-#define CONFIG_SUPPORT_RAW_INITRD
-#define CONFIG_SYS_BOOT_RAMDISK_HIGH
+	"lane_owner_info=6 emc_max_dvfs=0 \0"
 
 #include "tegra-common-usb-gadget.h"
 #include "tegra-common-post.h"
