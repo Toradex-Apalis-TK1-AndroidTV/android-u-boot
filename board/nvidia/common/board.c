@@ -152,10 +152,6 @@ int board_init(void)
 	warmboot_prepare_code(TEGRA_LP0_ADDR, TEGRA_LP0_SIZE);
 #endif
 
-#ifdef CONFIG_CMD_FASTBOOT
-	tegra_detect_boot_mode();
-#endif
-
 	return 0;
 }
 
@@ -224,6 +220,11 @@ int board_late_init(void)
 		setenv("cpu_ns_mode", "");
 	}
 #endif
+
+#ifdef CONFIG_CMD_FASTBOOT
+	tegra_detect_boot_mode();
+#endif
+
 	return 0;
 }
 

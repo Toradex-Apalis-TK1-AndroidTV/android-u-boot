@@ -20,6 +20,8 @@
 #define CONFIG_TEGRA124_LP0
 #endif
 
+/* TBD #define CONFIG_MISC_INIT_R - call recovery during start up */
+
 #define CONFIG_OF_LIBFDT
 #define CONFIG_OF_BOARD_SETUP
 #define CONFIG_SERIAL_TAG
