@@ -42,6 +42,15 @@
 #define CONFIG_SYS_I2C_TEGRA
 #define CONFIG_CMD_I2C
 
+/* Enable GPT partition table */
+#define CONFIG_PARTITION_UUIDS
+#define CONFIG_RANDOM_UUID
+#define CONFIG_CMD_UUID
+#define CONFIG_CMD_GPT
+#define CONFIG_EFI_PARTITION
+#define CONFIG_FS_EXT4
+#define CONFIG_CMD_FS_GENERIC
+
 /* SD/MMC */
 #define CONFIG_MMC
 #define CONFIG_GENERIC_MMC

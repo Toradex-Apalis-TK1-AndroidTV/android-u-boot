@@ -1,0 +1,4 @@
+make ARCH=arm CROSS_COMPILE=/home/matt/nvidia-aosp/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi- apalis-tk1_defconfig
+
+make ARCH=arm CROSS_COMPILE=/home/matt/nvidia-aosp/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi- jetson-tk1_defconfig
+

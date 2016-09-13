@@ -39,7 +39,11 @@
 #include <recovery.h>
 #endif
 #endif
-
+#if defined(CONFIG_TEGRA124)
+#include <asm/io.h>
+#include <asm/arch-tegra/pmc.h>
+#include <android_image.h>
+#endif
 #define FASTBOOT_VERSION		"0.4"
 
 #define FASTBOOT_INTERFACE_CLASS	0xff
