@@ -42,7 +42,13 @@
 #define CONFIG_SYS_I2C_TEGRA
 #define CONFIG_CMD_I2C
 
-/* Enable GPT partition table */
+/* SD/MMC */
+#define CONFIG_MMC
+#define CONFIG_GENERIC_MMC
+#define CONFIG_TEGRA_MMC
+#define CONFIG_CMD_MMC
+
+/* Enable gpt partition table */
 #define CONFIG_PARTITION_UUIDS
 #define CONFIG_RANDOM_UUID
 #define CONFIG_CMD_UUID
@@ -50,12 +56,6 @@
 #define CONFIG_EFI_PARTITION
 #define CONFIG_FS_EXT4
 #define CONFIG_CMD_FS_GENERIC
-
-/* SD/MMC */
-#define CONFIG_MMC
-#define CONFIG_GENERIC_MMC
-#define CONFIG_TEGRA_MMC
-#define CONFIG_CMD_MMC
 
 /* Environment in eMMC, at the end of 2nd "boot sector" */
 #define CONFIG_ENV_IS_IN_MMC
@@ -105,11 +105,10 @@
 #define CONFIG_FASTBOOT_GPT_NAME	0
 #define CONFIG_FASTBOOT_FLASH_MMC_DEV	0
 #define CONFIG_USB_FASTBOOT_BUF_SIZE	  0x40000000
-#define CONFIG_USB_FASTBOOT_BUF_ADDR	  (NV_PA_SDRAM_BASE + 0x10000000)
 
 /* Android bootimg support */
 #define CONFIG_ANDROID_BOOT_IMAGE
-
+#define CONFIG_USB_FASTBOOT_BUF_ADDR	  (NV_PA_SDRAM_BASE + 0x10000000)
 #define CONFIG_CMD_BOOTA
 #define CONFIG_CMD_BOOTA_BOOT_PART	      "LNX"
 #define CONFIG_CMD_BOOTA_RECOVERY_PART	  "SOS"
@@ -117,28 +116,24 @@
 #define CONFIG_ANDROID_DT_HDR_BUFF	      (NV_PA_SDRAM_BASE + 0x03000000)
 #define CONFIG_ANDROID_BOOT_HDR_BUFF	  (NV_PA_SDRAM_BASE + 0x04000000)
 #define BOARD_EXTRA_ENV_SETTINGS \
-	"fastboot_partition_alias_boot=LNX\0" \
-	"fastboot_partition_alias_boot=DTB\0" \
-	"fastboot_partition_alias_recovery=SOS\0" \
-	"fastboot_partition_alias_system=APP\0" \
-	"fastboot_partition_alias_cache=CAC\0" \
-	"fastboot_partition_alias_misc=MSC\0" \
-	"fastboot_partition_alias_factory=FCT\0" \
-	"fastboot_partition_alias_userdata=UDA\0" \
-	"fastboot_partition_alias_vendor=VNR\0" \
+	"fastboot_partition_alias_LNX=boot\0" \
+	"fastboot_partition_alias_DTB=dtb\0" \
+	"fastboot_partition_alias_SOS=recovery\0" \
+	"fastboot_partition_alias_APP=system\0" \
+	"fastboot_partition_alias_CAC=cache\0" \
+	"fastboot_partition_alias_MSC=misc\0" \
+	"fastboot_partition_alias_FCT=factory\0" \
+	"fastboot_partition_alias_UDA=userdata\0" \
+	"fastboot_partition_alias_VNR=vendor\0" \
 	"bootargs_append=" \
-	"init=init console=ttyS0,115200n8 " \
-	"lp0_vec=2064@0xf46ff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
-	"core_edp_mv=1150 core_edp_ma=4000 " \
-	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 " \
-	"video=tegrafb memtype=255 ddr_die=2048M@2048M section=256M " \
-	"debug_uartport=lsport,3 " \
-	"power_supply=Adapter audio_codec=sgtl5000 gpt " \
-	"usbcore.old_scheme_first=1 usb_port_owner_info=0 " \
-	"lane_owner_info=6 emc_max_dvfs=0 " \
-	"pmuboard=0x0177:0x0000:0x02:0x43:0x00 " \
-	"otf_key=c75e5bb91eb3bd947560357b64422f85 " \
-	"board_info=0x0177:0x0000:0x02:0x43:0x00\0"
+	"init=init console=ttyS0,115200n8 ldo_active=on " \
+	"lp0_vec=4096@0xfdfff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
+	"core_edp_mv=1150 core_edp_ma=4000 androidboot.touch_vendor_id=0 " \
+	"tegraid=40.1.1.0.0 tegra_fbmem=8388608@0x92caa000 is_hdmi_initialised=1 " \
+	"video=tegrafb0 no_console_suspend=1 memtype=255 ddr_die=2048M@2048M section=256M " \
+	"debug_uartport=lsport,3 android.kerneltype=normal androidboot.serialno=042271508196100002cf " \
+	"earlyprintk=uart8250-32bit,0x70006000 maxcpus=4 usbcore.old_scheme_first=1 usb_port_owner_info=2 " \
+	"touch_id=0@63 lane_owner_info=6 emc_max_dvfs=1 power_supply=Adapter audio_codec=rt5640 gpt \0"
 
 #include "tegra-common-usb-gadget.h"
 #include "tegra-common-post.h"
