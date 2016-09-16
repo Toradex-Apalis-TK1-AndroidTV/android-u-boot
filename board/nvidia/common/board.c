@@ -178,60 +178,49 @@ int board_early_init_f(void)
 }
 #endif	/* EARLY_INIT */
 
-#ifdef CONFIG_CMD_FASTBOOT
-void tegra_detect_boot_mode(void)
-{
-	struct pmc_ctlr *const pmc = (struct pmc_ctlr *)NV_PA_PMC_BASE;
-	u32 reg;
-	int ret;
-
-	reg = readl(&pmc->pmc_scratch0);
-
-	/* Should clear the boot flag in pmc_scratch0 first */
-	writel(reg & (~(PMC_SCRATCH0_FASTBOOT_MODE | PMC_SCRATCH0_RECOVERY_MODE)),
-			&pmc->pmc_scratch0);
-
-	if (reg & PMC_SCRATCH0_FASTBOOT_MODE) {
-		printf("Entering fastboot mode\n");
-		ret = enter_fastboot();
-		if (ret)
-			printf("Failed to enter fastboot mode");
-	} else if (reg & PMC_SCRATCH0_RECOVERY_MODE) {
-		printf("Entering recovery mode\n");
-		setenv("recovery", "1");
-	} else {
-		printf("Entering normal boot mode\n");
-		setenv("recovery", "0");
-	}
-}
-#endif
-
 int board_late_init(void)
 {
 #ifdef CONFIG_LCD
 	/* Make sure we finish initing the LCD */
 	tegra_lcd_check_next_stage(gd->fdt_blob, 1);
 #endif
-#if defined(CONFIG_TEGRA_SUPPORT_NON_SECURE)
-	if (tegra_cpu_is_non_secure()) {
-		printf("CPU is in NS mode\n");
-		setenv("cpu_ns_mode", "1");
-	} else {
-		setenv("cpu_ns_mode", "");
-	}
+
+#ifdef CONFIG_TEGRA_LP0
+	/* prepare the WB code to LP0 location */
+	warmboot_prepare_code(TEGRA_LP0_ADDR, TEGRA_LP0_SIZE);
 #endif
 
 #ifdef CONFIG_CMD_FASTBOOT
-	tegra_detect_boot_mode();
+	if (getenv_yesno("recovery") != 1) {
+		struct pmc_ctlr *pmc = (struct pmc_ctlr *)NV_PA_PMC_BASE;
+		unsigned int scratch = readl(&pmc->pmc_scratch0);
+
+		writel(scratch & ~(1 << 30) & ~(1 << 31), &pmc->pmc_scratch0);
+		if (scratch & (1 << 30)) {
+			printf("Found reboot-mode = bootloader!\n");
+			do_fastboot(NULL, 0, 0, NULL);
+			setenv("recovery", "0");
+		}
+		else if (scratch & (1 << 31)) {
+			printf("Found reboot-mode = recovery!\n");
+			setenv("recovery", "1");
+		}
+		else {
+			printf("No reboot-mode found\n");
+			setenv("recovery", "0");
+		}
+	}
 #endif
 
 	return 0;
 }
 
 #if defined(CONFIG_TEGRA_MMC)
-__weak void pin_mux_mmc(void)
+void __pin_mux_mmc(void)
 {
 }
+
+void pin_mux_mmc(void) __attribute__((weak, alias("__pin_mux_mmc")));
 
 /* this is a weak define that we are overriding */
 int board_mmc_init(bd_t *bd)

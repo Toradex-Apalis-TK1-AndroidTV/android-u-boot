@@ -90,7 +90,7 @@ extern int cmd_get_data_size(char* arg, int default_size);
 #endif
 
 #ifdef CONFIG_CMD_FASTBOOT
-extern int enter_fastboot(void);
+extern int do_fastboot(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[]);
 #endif
 
 #ifdef CONFIG_CMD_BOOTD

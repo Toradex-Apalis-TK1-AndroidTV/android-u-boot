@@ -11,7 +11,7 @@
 #include <command.h>
 #include <g_dnl.h>
 
-int enter_fastboot(void)
+int do_fastboot(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 {
 	int ret;
 
@@ -40,11 +40,6 @@ int enter_fastboot(void)
 	g_dnl_clear_detach();
 	return 0;
 
-}
-
-static int do_fastboot(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
-{
-	return enter_fastboot();
 }
 
 U_BOOT_CMD(

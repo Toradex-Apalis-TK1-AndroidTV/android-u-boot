@@ -2,3 +2,4 @@ make ARCH=arm CROSS_COMPILE=/home/matt/nvidia-aosp/prebuilts/gcc/linux-x86/arm/a
 
 make ARCH=arm CROSS_COMPILE=/home/matt/nvidia-aosp/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi- jetson-tk1_defconfig
 
+make ARCH=arm CROSS_COMPILE=/home/jetson/pure_nexus/pure_nexus/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi- jetson-tk1_defconfig
