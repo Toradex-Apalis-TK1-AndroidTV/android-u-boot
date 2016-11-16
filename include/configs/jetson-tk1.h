@@ -127,12 +127,12 @@
 	"fastboot_partition_alias_userdata=UDA\0" \
 	"fastboot_partition_alias_vendor=VNR\0" \
 	"bootargs_append=" \
-	"init=init console=ttyS0,115200n8 ldo_active=on board_info=0x0177:0x0000:0x02:0x43:0x00 " \
-	"lp0_vec=4096@0xfdfff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
+	"init=init console=ttyS0,115200n8 board_info=0x0177:0x0000:0x02:0x43:0x00 " \
+	"lp0_vec=2064@0xf46ff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
 	"core_edp_mv=1150 core_edp_ma=4000 androidboot.touch_vendor_id=0 " \
-	"tegraid=40.1.1.0.0 tegra_fbmem=8388608@0x92caa000 is_hdmi_initialised=1 " \
+	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 " \
 	"video=tegrafb no_console_suspend=1 memtype=255 ddr_die=2048M@2048M section=256M " \
-	"debug_uartport=lsport,3 android.kerneltype=normal androidboot.serialno=042271508196100002cf " \
+	"debug_uartport=lsport,3 android.kerneltype=normal androidboot.serialno=042271508196100002ed " \
 	"maxcpus=4 usbcore.old_scheme_first=1 usb_port_owner_info=2 pmuboard=0x0177:0x0000:0x02:0x43:0x00 " \
 	"touch_id=0@63 lane_owner_info=6 emc_max_dvfs=1 power_supply=Adapter audio_codec=rt5640 gpt \0"
 
