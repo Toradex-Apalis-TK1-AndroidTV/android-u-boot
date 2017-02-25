@@ -130,7 +130,7 @@
 	"init=init console=ttyS0,115200n8 board_info=0x0177:0x0000:0x02:0x43:0x00 " \
 	"lp0_vec=2064@0xf46ff000 mem=1862M@2048M vpr=151M@3945M tsec=32M@3913M " \
 	"core_edp_mv=1150 core_edp_ma=4000 androidboot.touch_vendor_id=0 " \
-	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 " \
+	"tegraid=40.1.1.0.0 tegra_fbmem=32899072@0xad012000 fbcon=map:1 androidboot.bootreason=pmc:software_reset,pmic:0x0" \
 	"video=tegrafb no_console_suspend=1 memtype=255 ddr_die=2048M@2048M section=256M " \
 	"debug_uartport=lsport,3 android.kerneltype=normal androidboot.serialno=042271508196100002ed " \
 	"maxcpus=4 usbcore.old_scheme_first=1 usb_port_owner_info=2 pmuboard=0x0177:0x0000:0x02:0x43:0x00 " \
