@@ -13,5 +13,6 @@ obj-y	+= pinmux.o
 obj-y	+= xusb-padctl.o
 
 ifndef CONFIG_SPL_BUILD
-obj-$(CONFIG_ARMV7_NONSEC) += psci.o
+obj-$(CONFIG_ARMV7_PSCI) += psci.o
 endif
+
