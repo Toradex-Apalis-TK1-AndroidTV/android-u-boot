@@ -4,12 +4,17 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
+#include <config.h>
 #include <common.h>
 #include <fb_mmc.h>
 #include <part.h>
 #include <aboot.h>
 #include <sparse_format.h>
 #include <mmc.h>
+
+#ifndef CONFIG_FASTBOOT_GPT_NAME
+#define CONFIG_FASTBOOT_GPT_NAME GPT_ENTRY_NAME
+#endif
 
 /* The 64 defined bytes plus the '\0' */
 #define RESPONSE_LEN	(64 + 1)
@@ -18,14 +23,36 @@ static char *response_str;
 
 void fastboot_fail(const char *s)
 {
-	strncpy(response_str, "FAIL", 4);
+	strncpy(response_str, "FAIL\0", 5);
 	strncat(response_str, s, RESPONSE_LEN - 4 - 1);
 }
 
 void fastboot_okay(const char *s)
 {
-	strncpy(response_str, "OKAY", 4);
+	strncpy(response_str, "OKAY\0", 5);
 	strncat(response_str, s, RESPONSE_LEN - 4 - 1);
+}
+
+static int get_partition_info_efi_by_name_or_alias(block_dev_desc_t *dev_desc,
+		const char *name, disk_partition_t *info)
+{
+	int ret;
+
+	ret = get_partition_info_efi_by_name(dev_desc, name, info);
+	if (ret) {
+		/* strlen("fastboot_partition_alias_") + 32(part_name) + 1 */
+		char env_alias_name[25 + 32 + 1];
+		char *aliased_part_name;
+
+		/* check for alias */
+		strcpy(env_alias_name, "fastboot_partition_alias_");
+		strncat(env_alias_name, name, 32);
+		aliased_part_name = getenv(env_alias_name);
+		if (aliased_part_name != NULL)
+			ret = get_partition_info_efi_by_name(dev_desc,
+					aliased_part_name, info);
+	}
+	return ret;
 }
 
 static void write_raw_image(block_dev_desc_t *dev_desc, disk_partition_t *info,
@@ -63,7 +90,6 @@ static void write_raw_image(block_dev_desc_t *dev_desc, disk_partition_t *info,
 void fb_mmc_flash_write(const char *cmd, void *download_buffer,
 			unsigned int download_bytes, char *response)
 {
-	int ret;
 	block_dev_desc_t *dev_desc;
 	disk_partition_t info;
 
@@ -77,20 +103,24 @@ void fb_mmc_flash_write(const char *cmd, void *download_buffer,
 		return;
 	}
 
-	ret = get_partition_info_efi_by_name(dev_desc, cmd, &info);
-	if (ret) {
-		char env_alias_name[25 + 32 + 1]; /* strlen("fastboot_partition_alias_") + 32(part_name) + 1 */
-		char *aliased_part_name;
-
-		/* check for alias */
-		strcpy(env_alias_name, "fastboot_partition_alias_");
-		strcat(env_alias_name, cmd);
-		aliased_part_name = getenv(env_alias_name);
-		if (aliased_part_name != NULL)
-			ret = get_partition_info_efi_by_name(dev_desc, aliased_part_name, &info);
-	}
-
-	if (ret) {
+	if (strcmp(cmd, CONFIG_FASTBOOT_GPT_NAME) == 0) {
+		printf("%s: updating MBR, Primary and Backup GPT(s)\n",
+		       __func__);
+		if (is_valid_gpt_buf(dev_desc, download_buffer)) {
+			printf("%s: invalid GPT - refusing to write to flash\n",
+			       __func__);
+			fastboot_fail("invalid GPT partition");
+			return;
+		}
+		if (write_mbr_and_gpt_partitions(dev_desc, download_buffer)) {
+			printf("%s: writing GPT partitions failed\n", __func__);
+			fastboot_fail("writing GPT partitions failed");
+			return;
+		}
+		printf("........ success\n");
+		fastboot_okay("");
+		return;
+	} else if (get_partition_info_efi_by_name_or_alias(dev_desc, cmd, &info)) {
 		error("cannot find partition: '%s'\n", cmd);
 		fastboot_fail("cannot find partition");
 		return;
@@ -128,7 +158,7 @@ void fb_mmc_erase(const char *cmd, char *response)
 		return;
 	}
 
-	ret = get_partition_info_efi_by_name(dev_desc, cmd, &info);
+	ret = get_partition_info_efi_by_name_or_alias(dev_desc, cmd, &info);
 	if (ret) {
 		error("cannot find partition: '%s'", cmd);
 		fastboot_fail("cannot find partition");
@@ -158,4 +188,3 @@ void fb_mmc_erase(const char *cmd, char *response)
 	       blks_size * info.blksz, cmd);
 	fastboot_okay("");
 }
-

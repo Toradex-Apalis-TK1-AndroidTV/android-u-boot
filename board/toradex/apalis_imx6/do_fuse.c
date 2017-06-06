@@ -9,6 +9,8 @@
 */
 
 #include <common.h>
+#ifndef CONFIG_SPL_BUILD
+#include <console.h>
 #include <fuse.h>
 
 static int mfgr_fuse(void)
@@ -23,13 +25,12 @@ static int mfgr_fuse(void)
 	printf("Fuse 4, 3: %8x\n", val);
 	fuse_sense(4, 2, &val);
 	printf("Fuse 4, 2: %8x\n", val);
-	if(val6 & 0x10)
-	{
+	if (val6 & 0x10) {
 		puts("BT_FUSE_SEL already fused, will do nothing\n");
 		return CMD_RET_FAILURE;
 	}
 	/* boot cfg */
-	fuse_prog(0, 5, 0x00005072);
+	fuse_prog(0, 5, 0x00005062);
 	/* BT_FUSE_SEL */
 	fuse_prog(0, 6, 0x00000010);
 	return CMD_RET_SUCCESS;
@@ -62,8 +63,7 @@ int do_updt_fuse(cmd_tbl_t *cmdtp, int flag, int argc,
 	/* boot cfg */
 	fuse_sense(0, 5, &val);
 	printf("Fuse 0, 5: %8x\n", val);
-	if(val & 0x10)
-	{
+	if (val & 0x10) {
 		puts("Fast boot mode already fused, no need to fuse\n");
 		return CMD_RET_SUCCESS;
 	}
@@ -95,3 +95,4 @@ U_BOOT_CMD(
 	"OTP fusing during module update",
 	"updt_fuse [-n] [-y] - boot cfg fast boot mode fusing"
 );
+#endif /* CONFIG_SPL_BUILD */

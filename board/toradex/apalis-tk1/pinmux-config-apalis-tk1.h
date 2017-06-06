@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016, Toradex, Inc.
+ * Copyright (c) 2016, Toradex, Inc.
  *
  * SPDX-License-Identifier: GPL-2.0+
  */
@@ -7,62 +7,52 @@
 #ifndef _PINMUX_CONFIG_APALIS_TK1_H_
 #define _PINMUX_CONFIG_APALIS_TK1_H_
 
-#define GPIO_INIT(_gpio, _init)				\
+#define GPIO_INIT(_port, _gpio, _init)			\
 	{						\
-		.gpio	= GPIO_P##_gpio,		\
+		.gpio	= TEGRA_GPIO(_port, _gpio),	\
 		.init	= TEGRA_GPIO_INIT_##_init,	\
 	}
 
 static const struct tegra_gpio_config apalis_tk1_gpio_inits[] = {
-	/*        gpio, init_val */
-	GPIO_INIT(A1,   IN),
-	GPIO_INIT(B1,   IN),
-	GPIO_INIT(C0,   OUT0),
-	GPIO_INIT(I5,   IN),
-	GPIO_INIT(I6,   IN),
-	GPIO_INIT(J0,   IN),
-	GPIO_INIT(J2,   IN),
-	GPIO_INIT(K2,   IN),
-	GPIO_INIT(K7,   IN),
-	GPIO_INIT(N2,   OUT1),
-	GPIO_INIT(N4,   OUT1),
-	GPIO_INIT(N5,   OUT1),
-	GPIO_INIT(N7,   IN),
-	GPIO_INIT(O5,   IN),
-	GPIO_INIT(O6,   OUT1),
-	GPIO_INIT(Q0,   OUT1),
-	GPIO_INIT(Q1,   OUT1),
-	GPIO_INIT(Q2,   OUT1),
-	GPIO_INIT(Q4,   OUT1),
-	GPIO_INIT(Q5,   OUT1),
-	GPIO_INIT(Q6,   OUT1),
-	GPIO_INIT(Q7,   OUT1),
-	GPIO_INIT(R0,   OUT0),
-	GPIO_INIT(R1,   OUT0),
-	GPIO_INIT(R2,   OUT0),
-	GPIO_INIT(S3,   OUT0),
-	GPIO_INIT(U4,   OUT1),
-	GPIO_INIT(V3,   IN),
-	GPIO_INIT(V4,   IN),
-	GPIO_INIT(V5,   IN),
-	GPIO_INIT(W3,   IN),
-	GPIO_INIT(W5,   IN),
-	GPIO_INIT(BB0,  IN),
-	GPIO_INIT(BB3,  OUT0),
-	GPIO_INIT(BB4,  IN),
-	GPIO_INIT(BB5,  OUT1),
-	GPIO_INIT(BB6,  OUT0),
-	GPIO_INIT(CC5,  IN),
-	GPIO_INIT(DD1,  IN),
-	GPIO_INIT(DD2,  IN),
-	GPIO_INIT(DD3,  IN),
-	GPIO_INIT(DD5,  IN),
-	GPIO_INIT(DD6,  IN),
-	GPIO_INIT(EE3,  IN),
-	GPIO_INIT(EE5,  IN),
-	GPIO_INIT(FF0,  IN),
-	GPIO_INIT(FF1,  IN),
-	GPIO_INIT(FF2,  IN),
+	/*        port, pin, init_val */
+	GPIO_INIT(A,    1,   IN),
+	GPIO_INIT(B,    1,   IN),
+	GPIO_INIT(C,    0,   OUT0),
+	GPIO_INIT(I,    5,   IN),
+	GPIO_INIT(I,    6,   IN),
+	GPIO_INIT(J,    0,   IN),
+	GPIO_INIT(J,    2,   IN),
+	GPIO_INIT(K,    2,   IN),
+	GPIO_INIT(K,    7,   IN),
+	GPIO_INIT(N,    2,   OUT1),
+	GPIO_INIT(N,    4,   OUT1),
+	GPIO_INIT(N,    5,   OUT1),
+	GPIO_INIT(N,    7,   IN),
+	GPIO_INIT(O,    5,   IN),
+	GPIO_INIT(Q,    0,   OUT0), /* Shift_CTRL_OE[0] */
+	GPIO_INIT(Q,    1,   OUT0), /* Shift_CTRL_OE[1] */
+	GPIO_INIT(Q,    2,   OUT0), /* Shift_CTRL_OE[2] */
+	GPIO_INIT(Q,    4,   OUT0), /* Shift_CTRL_OE[4] */
+	GPIO_INIT(Q,    5,   OUT1), /* Shift_CTRL_Dir_Out[0] */
+	GPIO_INIT(Q,    6,   OUT1), /* Shift_CTRL_Dir_Out[1] */
+	GPIO_INIT(Q,    7,   OUT1), /* Shift_CTRL_Dir_Out[2] */
+	GPIO_INIT(R,    0,   OUT0), /* Shift_CTRL_Dir_In[0] */
+	GPIO_INIT(R,    1,   OUT0), /* Shift_CTRL_Dir_In[1] */
+	GPIO_INIT(R,    2,   OUT0), /* Shift_CTRL_OE[3] */
+	GPIO_INIT(S,    3,   OUT0), /* Shift_CTRL_Dir_In[2] */
+	GPIO_INIT(U,    4,   OUT1),
+	GPIO_INIT(W,    3,   IN),
+	GPIO_INIT(W,    5,   IN),
+	GPIO_INIT(BB,   0,  IN),
+	GPIO_INIT(BB,   3,  OUT0),
+	GPIO_INIT(BB,   4,  IN),
+	GPIO_INIT(BB,   5,  OUT1),
+	GPIO_INIT(BB,   6,  OUT0),
+	GPIO_INIT(CC,   5,  IN),
+	GPIO_INIT(DD,   3,  IN),
+	GPIO_INIT(EE,   3,  IN),
+	GPIO_INIT(EE,   5,  IN),
+	GPIO_INIT(FF,   1,  IN),
 };
 
 #define PINCFG(_pingrp, _mux, _pull, _tri, _io, _od, _rcv_sel)	\
@@ -122,8 +112,8 @@ static const struct pmux_pingrp_config apalis_tk1_pingrps[] = {
 	PINCFG(PI3,                    SPI4,         NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(PI4,                    GMI,          DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(PI5,                    RSVD2,        UP,     TRISTATE, INPUT,   ENABLE,  DEFAULT),
-	PINCFG(PI6,                    RSVD1,        NORMAL, TRISTATE, INPUT,   DEFAULT, DEFAULT),
-	PINCFG(PI7,                    RSVD1,	     DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(PI6,                    RSVD1,        UP,     TRISTATE, INPUT,   DEFAULT, DEFAULT),
+	PINCFG(PI7,                    RSVD1,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(PJ0,                    RSVD1,        UP,     TRISTATE, INPUT,   ENABLE,  DEFAULT),
 	PINCFG(PJ2,                    RSVD1,        UP,     TRISTATE, INPUT,   ENABLE,  DEFAULT),
 	PINCFG(UART2_CTS_N_PJ5,        UARTB,        NORMAL, TRISTATE, INPUT,   DEFAULT, DEFAULT),
@@ -160,17 +150,17 @@ static const struct pmux_pingrp_config apalis_tk1_pingrps[] = {
 	PINCFG(DAP4_DIN_PP5,           RSVD3,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(DAP4_DOUT_PP6,          RSVD4,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(DAP4_SCLK_PP7,          RSVD3,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL0_PQ0,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL1_PQ1,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL2_PQ2,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL0_PQ0,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL1_PQ1,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL2_PQ2,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_COL3_PQ3,            KBC,          DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL4_PQ4,            KBC,          DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL5_PQ5,            RSVD2,        UP,     TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL6_PQ6,            RSVD2,        UP,     TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_COL7_PQ7,            RSVD2,        UP,     TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_ROW0_PR0,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_ROW1_PR1,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_ROW2_PR2,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL4_PQ4,            KBC,          NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL5_PQ5,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL6_PQ6,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_COL7_PQ7,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_ROW0_PR0,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_ROW1_PR1,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_ROW2_PR2,            RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW3_PR3,            KBC,          DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW4_PR4,            RSVD3,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW5_PR5,            RSVD3,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
@@ -179,7 +169,7 @@ static const struct pmux_pingrp_config apalis_tk1_pingrps[] = {
 	PINCFG(KB_ROW8_PS0,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW9_PS1,            RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW10_PS2,           RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(KB_ROW11_PS3,           RSVD2,        UP,     TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(KB_ROW11_PS3,           RSVD2,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW12_PS4,           RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW13_PS5,           RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(KB_ROW14_PS6,           RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
@@ -198,7 +188,7 @@ static const struct pmux_pingrp_config apalis_tk1_pingrps[] = {
 	PINCFG(PU6,                    PWM3,         NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(PV0,                    RSVD1,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(PV1,                    RSVD1,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
-	PINCFG(SDMMC3_CD_N_PV2,        RSVD3,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
+	PINCFG(SDMMC3_CD_N_PV2,        RSVD3,        UP,     TRISTATE, INPUT,   DEFAULT, DEFAULT),
 	PINCFG(SDMMC1_WP_N_PV3,        SDMMC1,       UP,     TRISTATE, INPUT,   DEFAULT, DEFAULT),
 	PINCFG(DDC_SCL_PV4,            RSVD2,        NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
 	PINCFG(DDC_SDA_PV5,            RSVD2,        NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
@@ -258,16 +248,16 @@ static const struct pmux_pingrp_config apalis_tk1_pingrps[] = {
 	PINCFG(CLK3_REQ_PEE1,          RSVD2,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(DAP_MCLK1_REQ_PEE2,     RSVD4,        DOWN,   TRISTATE, OUTPUT,  DEFAULT, DEFAULT),
 	PINCFG(HDMI_CEC_PEE3,          CEC,          NORMAL, NORMAL,   INPUT,   DISABLE, DEFAULT),
-	/* Leave SDMMC3_CLK_LB_OUT aka SD1_CD# muxed as SDMMC3 with output driver enabled aka not
-	 * tristated and input driver enabled as well for now as it features some magic properties
-	 * even though the external loopback is disabled and the internal loopback used as per
-	 * SDMMC_VENDOR_MISC_CNTRL_0 register's SDMMC_SPARE1 bits being set to 0xfffd according to
-	 * the TRM!
-	 * PINCFG(SDMMC3_CLK_LB_OUT_PEE4, RSVD2,        UP,     TRISTATE, INPUT,   DEFAULT, DEFAULT),
+	/*
+	 * Leave SDMMC3_CLK_LB_OUT muxed as SDMMC3 with output driver enabled aka not
+	 * tristated and input driver enabled as well as it features some magic
+	 * properties even though the external loopback is disabled and the internal
+	 * loopback used as per SDMMC_VENDOR_MISC_CNTRL_0 register's SDMMC_SPARE1 bits
+	 * being set to 0xfffd according to the TRM!
 	 */
-	PINCFG(SDMMC3_CLK_LB_OUT_PEE4, SDMMC3,       UP,     NORMAL,   INPUT,   DEFAULT, DEFAULT),
+	PINCFG(SDMMC3_CLK_LB_OUT_PEE4, SDMMC3,       NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
 	PINCFG(SDMMC3_CLK_LB_IN_PEE5,  RSVD2,        NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
-	PINCFG(DP_HPD_PFF0,            RSVD2,        NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
+	PINCFG(DP_HPD_PFF0,            DP,           NORMAL, NORMAL,   INPUT,   DEFAULT, DEFAULT),
 	PINCFG(USB_VBUS_EN2_PFF1,      RSVD2,        NORMAL, NORMAL,   INPUT,   DISABLE, DEFAULT),
 	PINCFG(PFF2,                   RSVD2,        NORMAL, NORMAL,   INPUT,   DISABLE, DEFAULT),
 	PINCFG(CORE_PWR_REQ,           PWRON,        NORMAL, NORMAL,   OUTPUT,  DEFAULT, DEFAULT),

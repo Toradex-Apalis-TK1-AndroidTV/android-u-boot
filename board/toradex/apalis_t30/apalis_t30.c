@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2015 Toradex, Inc.
+ * Copyright (c) 2012-2016 Toradex, Inc.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -13,10 +13,9 @@
 #include <asm/io.h>
 #include <dm.h>
 #include <i2c.h>
-#include <netdev.h>
+#include "../common/tdx-common.h"
 
 #include "pinmux-config-apalis_t30.h"
-#include "../common/configblock.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -53,12 +52,20 @@ int arch_misc_init(void)
 	return 0;
 }
 
-int checkboard_fallback(void)
+int checkboard(void)
 {
-	printf("Model: Toradex Apalis T30 %dGB\n", (gd->ram_size == 0x40000000)?1:2);
+	printf("Model: Toradex Apalis T30 %dGB\n",
+	       (gd->ram_size == 0x40000000) ? 1 : 2);
 
 	return 0;
 }
+
+#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+int ft_board_setup(void *blob, bd_t *bd)
+{
+	return ft_common_board_setup(blob, bd);
+}
+#endif
 
 /*
  * Routine: pinmux_init
@@ -140,10 +147,5 @@ int tegra_pcie_board_init(void)
 #endif /* APALIS_T30_PCIE_EVALBOARD_INIT */
 
 	return 0;
-}
-
-int board_eth_init(bd_t *bis)
-{
-	return pci_eth_init(bis);
 }
 #endif /* CONFIG_PCI_TEGRA */

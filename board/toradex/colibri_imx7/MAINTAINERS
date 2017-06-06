@@ -1,7 +1,8 @@
 Colibri iMX7
-M:	Max Krummenacher <max.krummenacher@toradex.com>
+M:	Stefan Agner <stefan.agner@toradex.com>
 M:	Toradex ARM Support <support.arm@toradex.com>
 W:	http://developer.toradex.com/software/linux/linux-software
+W:	https://www.toradex.com/community
 S:	Maintained
 F:	board/toradex/colibri_imx7/
 F:	include/configs/colibri_imx7.h
