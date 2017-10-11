@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
+ * Copyright (c) 2013-2017, NVIDIA CORPORATION.  All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms and conditions of the GNU General Public License,
@@ -247,8 +247,7 @@ static enum fuse_operating_mode fuse_get_operation_mode(u32 tegra_id)
 	chip_id = (chip_id & HIDREV_CHIPID_MASK) >> HIDREV_CHIPID_SHIFT;
 	if (chip_id == tegra_id) {
 		if (is_odm_production_mode()) {
-			printf("!! odm_production_mode is not supported !!\n");
-			return MODE_UNDEFINED;
+			return MODE_ODM_PRODUCTION;
 		} else {
 			if (is_production_mode())
 				return MODE_PRODUCTION;
@@ -277,6 +276,11 @@ static void determine_crypto_options(u32 tegra_id, int *is_encrypted,
 		*is_signed = 1;
 		*use_zero_key = 1;
 		break;
+	case MODE_ODM_PRODUCTION:
+		/*
+		 * For ODM production mode, signing is done by an external
+		 * signing utitity, hence set is_signed to 0.
+		 */
 	case MODE_UNDEFINED:
 	default:
 		*is_encrypted = 0;
@@ -328,6 +332,31 @@ int t1x4_wb_prepare_code(u32 tegra_id, u32 seg_address, u32 seg_length)
 	determine_crypto_options(tegra_id, &is_encrypted, &is_signed,
 				 &use_zero_key);
 
+	if (is_encrypted) {
+		printf("!!!! Encryption is not supported !!!!\n");
+		err = -EACCES;
+		goto fail;
+	}
+
+	/*
+	 * If signing is not required by this wb_prepare function, make sure
+	 * that wb_header has been properly updated by an external signing
+	 * utility.
+	 */
+	if (!is_signed) {
+		/*
+		 * By checking:
+		 *   1. wb_header's length_insecure is not 0,
+		 *   2. code_length matches to the calculated code length.
+		 */
+		if ((wb_header.length_insecure == 0) ||
+		    (length != wb_header.code_length)) {
+			printf("Error: WB0 code is not signed.\n");
+			err = -EACCES;
+			goto fail;
+		}
+	}
+
 	/* Get the actual code limits. */
 	length = roundup(((u32)wb_end - (u32)wb_start), 16);
 
@@ -355,7 +384,16 @@ int t1x4_wb_prepare_code(u32 tegra_id, u32 seg_address, u32 seg_length)
 	}
 
 	dst_header = (struct wb_header *)seg_address;
-	memset((char *)dst_header, 0, sizeof(struct wb_header));
+
+	/* copy wb header to destination */
+	memcpy((char *)dst_header, (char *)&wb_header, sizeof(struct wb_header));
+	/* copy the wb code directly following dst_header. */
+	memcpy((char *)(dst_header + 1), (char *)wb_start, length);
+
+	if (is_signed) {
+		memset((char *)dst_header, 0, sizeof(struct wb_header));
+
+		/* If signing is required, populate the random_aes_block */
 
 	/* Populate the random_aes_block as requested. */
 	{
@@ -378,26 +416,16 @@ int t1x4_wb_prepare_code(u32 tegra_id, u32 seg_address, u32 seg_length)
 		} while (aes_block < end);
 	}
 
-	/* Populate the header. */
-	dst_header->length_insecure = length + sizeof(struct wb_header);
-	dst_header->length_secure = length + sizeof(struct wb_header);
-	dst_header->destination = NV_WB_RUN_ADDRESS;
-	dst_header->entry_point = NV_WB_RUN_ADDRESS;
-	dst_header->code_length = length;
+		/* Populate the header. */
+		dst_header->length_insecure = length + sizeof(struct wb_header);
+		dst_header->length_secure = length + sizeof(struct wb_header);
+		dst_header->destination = NV_WB_RUN_ADDRESS;
+		dst_header->entry_point = NV_WB_RUN_ADDRESS;
+		dst_header->code_length = length;
 
-	if (is_encrypted) {
-		printf("!!!! Encryption is not supported !!!!\n");
-		dst_header->length_insecure = 0;
-		err = -EACCES;
-		goto fail;
-	} else {
-		/* copy the wb code directly following dst_header. */
-		memcpy((char *)(dst_header+1), (char *)wb_start, length);
-	}
-
-	if (is_signed)
 		err = sign_wb_code(seg_address, dst_header->length_insecure,
 				   use_zero_key);
+	}
 
 fail:
 	if (err)
